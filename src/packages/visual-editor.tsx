@@ -1,7 +1,16 @@
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import "./visual-editor.scss";
+import { VisualEditorModelValue } from "./visual-editor.utils";
+
 export const VisualEditor = defineComponent({
-  props: {},
+  props: {
+    modelValue: {
+      type: Object as PropType<VisualEditorModelValue>,
+    },
+  },
+  emits: {
+    "update:modelValue": (val?: VisualEditorModelValue) => true,
+  },
   setup(props) {
     return () => (
       <div class="visual-editor">

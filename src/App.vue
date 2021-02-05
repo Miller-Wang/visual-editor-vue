@@ -11,6 +11,26 @@ import { VisualEditor } from "../src/packages/visual-editor";
 export default defineComponent({
   name: "App",
   components: { VisualEditor },
+  data() {
+    return {
+      jsonData: {
+        container: {
+          height: 500,
+          width: 800,
+        },
+        blocks: [
+          {
+            top: 100,
+            left: 100,
+          },
+          {
+            top: 200,
+            left: 200,
+          },
+        ],
+      },
+    };
+  },
 });
 </script>
 
