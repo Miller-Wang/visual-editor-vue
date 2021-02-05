@@ -1,5 +1,5 @@
 {
-  "name": "visual-editor-vue",
+  "name": "demo-visual-editor",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,18 +8,26 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "vue": "^3.0.0"
+    "core-js": "^3.6.5",
+    "deepcopy": "^2.1.0",
+    "element-plus": "^1.0.2-beta.28",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
+    "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
     "@vue/eslint-config-typescript": "^5.0.2",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0-0",
+    "sass": "^1.26.5",
+    "sass-loader": "^8.0.2",
     "typescript": "~3.9.3"
   },
   "eslintConfig": {
@@ -35,7 +43,12 @@
     "parserOptions": {
       "ecmaVersion": 2020
     },
-    "rules": {}
+    "rules": {
+      "no-debugger": "off",
+      "no-unused-vars": "off",
+      "no-unused-expressions": "off",
+      "prefer-const":"warn"
+    }
   },
   "browserslist": [
     "> 1%",

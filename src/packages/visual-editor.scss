@@ -1,0 +1,67 @@
+$menuSize: 355px; // 菜单列表宽度
+$headSize: 60px; // 顶部操作栏高度
+$operatorSize: 275px; // 右侧编辑宽度
+
+$ibc: #dcdfe6; // 边框
+$ibl: #ebeef5; // 边框 轻
+$itc: #314659; // 字体颜色
+$icc: rgba(0, 0, 0, 0.45); // 图标颜色
+$boxShadowColor: #f0f1f2;
+
+$primary: #409eff;
+
+.visual-editor {
+  position: fixed;
+  top: 20px;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  background-color: white;
+  &::before {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba($color: black, $alpha: 0.1);
+    content: "";
+  }
+  & > .menu {
+    position: absolute;
+    width: $menuSize;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background-color: white;
+  }
+  & > .head {
+    position: absolute;
+    top: 0;
+    left: $menuSize;
+    right: $operatorSize;
+    height: $headSize;
+    background-color: $primary;
+  }
+  & > .operator {
+    position: absolute;
+    width: $operatorSize;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+  }
+
+  & > .body {
+    padding-top: $headSize;
+    padding-left: $menuSize;
+    padding-right: $operatorSize;
+    box-sizing: border-box;
+    background-color: skyblue;
+    height: 100%;
+    .content {
+      height: 100%;
+      width: 100%;
+      overflow: scroll;
+    }
+  }
+}
