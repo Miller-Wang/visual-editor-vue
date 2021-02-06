@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <visual-editor />
+    <visual-editor v-model="editorData" />
   </div>
 </template>
 
@@ -13,20 +13,14 @@ export default defineComponent({
   components: { VisualEditor },
   data() {
     return {
-      jsonData: {
+      editorData: {
         container: {
           height: 500,
           width: 800,
         },
         blocks: [
-          {
-            top: 100,
-            left: 100,
-          },
-          {
-            top: 200,
-            left: 200,
-          },
+          { top: 100, left: 100 },
+          { top: 200, left: 200 },
         ],
       },
     };
