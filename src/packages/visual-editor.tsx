@@ -209,6 +209,30 @@ export const VisualEditor = defineComponent({
       };
     })();
 
+    const toolButtons = [
+      {
+        label: "撤销",
+        icon: "icon-back",
+        tip: "ctrl+z",
+      },
+      {
+        label: "重做",
+        icon: "icon-forward",
+        tip: "ctrl+y, ctrl+shift+z",
+      },
+      {
+        label: "删除",
+        icon: "icon-delete",
+        handler: () => {
+          // 删除选中状态的 block
+          dataModel.value!.blocks = [
+            ...focusData.value.unfocus,
+          ] as VisualEditorBlockData[];
+        },
+        tip: "ctrl+d, backspance, delete,",
+      },
+    ];
+
     return () => (
       <div class="visual-editor">
         <div class="menu">
@@ -224,7 +248,14 @@ export const VisualEditor = defineComponent({
             </div>
           ))}
         </div>
-        <div class="head">head</div>
+        <div class="head">
+          {toolButtons.map((btn, index) => (
+            <div key={index} class="head-btn" onClick={btn.handler}>
+              <i class={`iconfont ${btn.icon}`}></i>
+              <span>{btn.label}</span>
+            </div>
+          ))}
+        </div>
         <div class="operator">operator</div>
         <div class="body">
           <div class="content">

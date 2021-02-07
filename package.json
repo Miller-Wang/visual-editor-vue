@@ -47,7 +47,8 @@
       "no-debugger": "off",
       "no-unused-vars": "off",
       "no-unused-expressions": "off",
-      "prefer-const":"warn"
+      "prefer-const":"warn",
+      "no-empty-function":"off"
     }
   },
   "browserslist": [
