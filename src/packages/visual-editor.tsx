@@ -3,6 +3,8 @@ import { useModel } from "./utils/useModel";
 import { VisualEditorBlock } from "./visual-editor-block";
 import "./visual-editor.scss";
 import {
+  createNewBlock,
+  VisualEditorBlockData,
   VisualEditorComponent,
   VisualEditorConfig,
   VisualEditorModelValue,
@@ -23,17 +25,45 @@ export const VisualEditor = defineComponent({
     "update:modelValue": (val?: VisualEditorModelValue) => true,
   },
   setup(props, ctx) {
+    // 双向数据绑定
     const dataModel = useModel(
       () => props.modelValue,
       (val) => ctx.emit("update:modelValue", val)
     );
+    // container样式
     const containerStyles = computed(() => ({
       width: `${props.modelValue?.container.width}px`,
       height: `${props.modelValue?.container.height}px`,
     }));
-
+    // container dom引用
     const containerRef = ref({} as HTMLElement);
 
+    // 计算选中与未选中的block数据
+    const focusData = computed(() => {
+      const focus: VisualEditorBlockData[] =
+        dataModel.value?.blocks.filter((v) => v.focus) || [];
+      const unfocus: VisualEditorBlockData[] =
+        dataModel.value?.blocks.filter((v) => !v.focus) || [];
+      return {
+        focus, // 此时选中的数据
+        unfocus, // 此时未选中的数据
+      };
+    });
+
+    // 对外暴露的一些方法
+    const methods = {
+      clearFocus: (block?: VisualEditorBlockData) => {
+        let blocks = dataModel.value?.blocks || [];
+        if (blocks.length === 0) return;
+
+        if (block) {
+          blocks = blocks.filter((v) => v !== block);
+        }
+        blocks.forEach((block) => (block.focus = false));
+      },
+    };
+
+    // 处理菜单拖拽进容器
     const menuDragger = (() => {
       let component = null as null | VisualEditorComponent;
 
@@ -59,12 +89,13 @@ export const VisualEditor = defineComponent({
         drop: (e: DragEvent) => {
           console.log("drop", component);
           const blocks = dataModel.value?.blocks || [];
-          blocks.push({
-            componentKey: component!.key,
-            top: e.offsetY,
-            left: e.offsetX,
-            adjustPosition: true,
-          });
+          blocks.push(
+            createNewBlock({
+              component: component!,
+              top: e.offsetY,
+              left: e.offsetX,
+            })
+          );
           console.log("x", e.offsetX);
           console.log("y", e.offsetY);
           dataModel.value = {
@@ -112,6 +143,72 @@ export const VisualEditor = defineComponent({
       return blockHandler;
     })();
 
+    // 处理组件在画布上他拖拽
+    const blockDragger = (() => {
+      let dragState = {
+        startX: 0,
+        startY: 0,
+        startPos: [] as { left: number; top: number }[],
+      };
+
+      const mousemove = (e: MouseEvent) => {
+        const durX = e.clientX - dragState.startX;
+        const durY = e.clientY - dragState.startY;
+        focusData.value.focus.forEach((block, i) => {
+          block.top = dragState.startPos[i].top + durY;
+          block.left = dragState.startPos[i].left + durX;
+        });
+      };
+      const mouseup = (e: MouseEvent) => {
+        document.removeEventListener("mousemove", mousemove);
+        document.removeEventListener("mouseup", mouseup);
+      };
+
+      const mousedown = (e: MouseEvent) => {
+        dragState = {
+          startX: e.clientX,
+          startY: e.clientY,
+          startPos: focusData.value.focus.map(({ top, left }) => ({
+            top,
+            left,
+          })),
+        };
+        document.addEventListener("mousemove", mousemove);
+        document.addEventListener("mouseup", mouseup);
+      };
+
+      return { mousedown };
+    })();
+
+    // 处理组件的选中状态
+    const focusHandler = (() => {
+      return {
+        container: {
+          onMousedown: (e: MouseEvent) => {
+            e.stopPropagation();
+            methods.clearFocus();
+          },
+        },
+        block: {
+          onMousedown: (e: MouseEvent, block: VisualEditorBlockData) => {
+            e.stopPropagation();
+            e.preventDefault();
+            // 只有元素未选中状态下， 才去处理
+            if (!block.focus) {
+              if (!e.shiftKey) {
+                block.focus = !block.focus;
+                methods.clearFocus(block);
+              } else {
+                block.focus = true;
+              }
+            }
+            // 处理组件的选中移动
+            blockDragger.mousedown(e);
+          },
+        },
+      };
+    })();
+
     return () => (
       <div class="visual-editor">
         <div class="menu">
@@ -135,12 +232,17 @@ export const VisualEditor = defineComponent({
               class="container"
               ref={containerRef}
               style={containerStyles.value}
+              {...focusHandler.container}
             >
               {(dataModel.value?.blocks || []).map((block, index: number) => (
                 <VisualEditorBlock
                   block={block}
                   key={index}
                   config={props.config}
+                  {...{
+                    onMousedown: (e: MouseEvent) =>
+                      focusHandler.block.onMousedown(e, block),
+                  }}
                 />
               ))}
             </div>

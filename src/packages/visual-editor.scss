@@ -109,6 +109,21 @@ $primary: #409eff;
         position: relative;
         .visual-editor-block {
           position: absolute;
+          &::after {
+            $space: -3px;
+            position: absolute;
+            top: $space;
+            left: $space;
+            right: $space;
+            bottom: $space;
+            content: "";
+          }
+          &-focus {
+            &::after {
+              // 边框显示在伪元素上面
+              border: 1px dashed $primary;
+            }
+          }
         }
       }
     }
