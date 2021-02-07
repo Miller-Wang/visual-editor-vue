@@ -33,6 +33,43 @@ $primary: #409eff;
     left: 0;
     bottom: 0;
     background-color: white;
+    .menu-item {
+      position: relative;
+      text-align: center;
+      width: calc(100% - 20px);
+      margin-left: 10px;
+      border: 2px solid $ibl;
+      margin-top: 20px;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      box-sizing: border-box;
+      &::after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 2;
+        content: "";
+      }
+      &:hover {
+        border-color: $primary;
+        cursor: move;
+      }
+      &-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: $primary;
+        color: white;
+        padding: 4px 8px;
+        z-index: 1;
+        font-size: 14px;
+      }
+    }
   }
   & > .head {
     position: absolute;
@@ -59,7 +96,7 @@ $primary: #409eff;
     background-color: rgba($color: white, $alpha: 0.5);
     height: 100%;
     position: relative;
-    z-index: 1;
+    // z-index: -1;
     .content {
       height: 100%;
       width: 100%;
