@@ -1,0 +1,57 @@
+$space: 6px;
+$size: 6px;
+$primary: #409eff;
+
+.block-resize {
+  position: absolute;
+  top: -$space;
+  left: -$space;
+  right: -$space;
+  bottom: -$space;
+  width: $size;
+  height: $size;
+  background-color: $primary;
+  &.block-resize-top {
+    left: calc(50% - #{$size / 2});
+    right: initial;
+    bottom: initial;
+  }
+
+  &.block-resize-bottom {
+    left: calc(50% - #{$size / 2});
+    right: initial;
+    top: initial;
+  }
+
+  &.block-resize-left {
+    top: calc(50% - #{$size / 2});
+    bottom: initial;
+    right: initial;
+  }
+
+  &.block-resize-right {
+    top: calc(50% - #{$size / 2});
+    left: initial;
+    bottom: initial;
+  }
+
+  &.block-resize-top-left {
+    right: initial;
+    bottom: initial;
+  }
+
+  &.block-resize-top-right {
+    left: initial;
+    bottom: initial;
+  }
+
+  &.block-resize-bottom-left {
+    top: initial;
+    right: initial;
+  }
+
+  &.block-resize-bottom-right {
+    left: initial;
+    top: initial;
+  }
+}

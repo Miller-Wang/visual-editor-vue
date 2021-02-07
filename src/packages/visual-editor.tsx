@@ -152,8 +152,18 @@ export const VisualEditor = defineComponent({
       };
 
       const mousemove = (e: MouseEvent) => {
-        const durX = e.clientX - dragState.startX;
-        const durY = e.clientY - dragState.startY;
+        let durX = e.clientX - dragState.startX;
+        let durY = e.clientY - dragState.startY;
+
+        // 按下shift键时，组件只能横向或纵向移动
+        if (e.shiftKey) {
+          // 当鼠标横向移动的距离 大于 纵向移动的距离，将纵向的偏移置为0
+          if (Math.abs(durX) > Math.abs(durY)) {
+            durY = 0;
+          } else {
+            durX = 0;
+          }
+        }
         focusData.value.focus.forEach((block, i) => {
           block.top = dragState.startPos[i].top + durY;
           block.left = dragState.startPos[i].left + durX;

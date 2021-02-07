@@ -4,6 +4,8 @@ import {
   VisualEditorConfig,
 } from "./visual-editor.utils";
 
+import { BlockResizer } from "./components/block-resizer";
+
 export const VisualEditorBlock = defineComponent({
   props: {
     block: {
@@ -40,10 +42,17 @@ export const VisualEditorBlock = defineComponent({
 
     return () => {
       const component = props.config?.componentMap[props.block!.componentKey];
+      const { width, height } = component?.resize || {};
       const Render = component?.render();
       return (
         <div class={classes.value} style={styles.value} ref={el}>
           {Render}
+          {props.block?.focus && (width || height) && (
+            <BlockResizer
+              block={props.block!}
+              component={component!}
+            ></BlockResizer>
+          )}
         </div>
       );
     };

@@ -19,6 +19,7 @@ export interface VisualEditorComponent {
   label: string;
   preview: () => JSX.Element;
   render: () => JSX.Element;
+  resize?: { width?: boolean; height?: boolean };
 }
 
 export function createNewBlock(data: {
