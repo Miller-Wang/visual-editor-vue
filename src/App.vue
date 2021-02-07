@@ -22,10 +22,12 @@ export default defineComponent({
         },
         blocks: [
           {
+            componentKey: "button",
             top: 100,
             left: 100,
           },
           {
+            componentKey: "input",
             top: 200,
             left: 200,
           },
