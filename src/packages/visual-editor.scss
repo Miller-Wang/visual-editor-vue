@@ -143,6 +143,10 @@ $primary: #409eff;
         position: relative;
         .visual-editor-block {
           position: absolute;
+          .el-button,
+          .el-input {
+            transition: none;
+          }
           &::after {
             $space: -3px;
             position: absolute;

@@ -202,7 +202,7 @@ export const VisualEditor = defineComponent({
         block: {
           onMousedown: (e: MouseEvent, block: VisualEditorBlockData) => {
             e.stopPropagation();
-            e.preventDefault();
+            // e.preventDefault();
             // 只有元素未选中状态下， 才去处理
             if (!block.focus) {
               if (!e.shiftKey) {

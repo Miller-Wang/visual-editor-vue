@@ -11,47 +11,57 @@ $primary: #409eff;
   width: $size;
   height: $size;
   background-color: $primary;
+  z-index: 99;
+  user-select: none;
   &.block-resize-top {
     left: calc(50% - #{$size / 2});
     right: initial;
     bottom: initial;
+    cursor: n-resize;
   }
 
   &.block-resize-bottom {
     left: calc(50% - #{$size / 2});
     right: initial;
     top: initial;
+    cursor: s-resize;
   }
 
   &.block-resize-left {
     top: calc(50% - #{$size / 2});
     bottom: initial;
     right: initial;
+    cursor: w-resize;
   }
 
   &.block-resize-right {
     top: calc(50% - #{$size / 2});
     left: initial;
     bottom: initial;
+    cursor: e-resize;
   }
 
   &.block-resize-top-left {
     right: initial;
     bottom: initial;
+    cursor: nw-resize;
   }
 
   &.block-resize-top-right {
     left: initial;
     bottom: initial;
+    cursor: ne-resize;
   }
 
   &.block-resize-bottom-left {
     top: initial;
     right: initial;
+    cursor: sw-resize;
   }
 
   &.block-resize-bottom-right {
     left: initial;
     top: initial;
+    cursor: se-resize;
   }
 }

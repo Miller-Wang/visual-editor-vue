@@ -4,6 +4,9 @@ export interface VisualEditorBlockData {
   componentKey: string;
   adjustPosition: boolean; // 是否需要调整位置
   focus: boolean; // 是否是选中状态
+  width: number;
+  height: number;
+  hasResize: boolean; // 是否调整过宽高
 }
 
 export interface VisualEditorModelValue {
@@ -18,7 +21,7 @@ export interface VisualEditorComponent {
   key: string;
   label: string;
   preview: () => JSX.Element;
-  render: () => JSX.Element;
+  render: (data: { size: { width?: number; height?: number } }) => JSX.Element;
   resize?: { width?: boolean; height?: boolean };
 }
 
@@ -33,6 +36,9 @@ export function createNewBlock(data: {
     left: data.left,
     adjustPosition: true,
     focus: false,
+    width: 0,
+    height: 0,
+    hasResize: false,
   };
 }
 

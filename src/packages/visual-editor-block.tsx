@@ -37,13 +37,23 @@ export const VisualEditorBlock = defineComponent({
         block.left -= offsetWidth / 2;
         block.top -= offsetHeight / 2;
         block.adjustPosition = false;
+        block.width = offsetWidth;
+        block.height = offsetHeight;
       }
     });
 
     return () => {
       const component = props.config?.componentMap[props.block!.componentKey];
       const { width, height } = component?.resize || {};
-      const Render = component?.render();
+      const renderProps = {
+        size: props.block?.hasResize
+          ? {
+              width: props.block.width,
+              height: props.block.height,
+            }
+          : {},
+      };
+      const Render = component?.render(renderProps);
       return (
         <div class={classes.value} style={styles.value} ref={el}>
           {Render}

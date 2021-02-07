@@ -12,14 +12,18 @@ visualConfig.registry("text", {
 visualConfig.registry("button", {
   label: "按钮",
   preview: () => <ElButton>按钮</ElButton>,
-  render: () => <ElButton>渲染按钮</ElButton>,
+  render: ({ size }) => (
+    <ElButton style={{ width: `${size.width}px`, height: `${size.height}px` }}>
+      渲染按钮
+    </ElButton>
+  ),
   resize: { width: true, height: true },
 });
 
 visualConfig.registry("input", {
   label: "输入框",
   preview: () => <ElInput />,
-  render: () => <ElInput />,
+  render: ({ size }) => <ElInput style={{ width: `${size.width}px` }} />,
   resize: { width: true },
 });
 
