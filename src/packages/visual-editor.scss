@@ -163,6 +163,19 @@ $primary: #409eff;
             }
           }
         }
+
+        .mark-line-y {
+          position: absolute;
+          left: 0;
+          right: 0;
+          border-top: 1px dashed $primary;
+        }
+        .mark-line-x {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          border-left: 1px dashed $primary;
+        }
       }
     }
   }

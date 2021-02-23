@@ -1,4 +1,4 @@
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, ref, reactive } from "vue";
 import { useModel } from "./utils/useModel";
 import { VisualEditorBlock } from "./visual-editor-block";
 import "./visual-editor.scss";
@@ -7,6 +7,7 @@ import {
   VisualEditorBlockData,
   VisualEditorComponent,
   VisualEditorConfig,
+  VisualEditorMarkLine,
   VisualEditorModelValue,
 } from "./visual-editor.utils";
 
@@ -143,31 +144,79 @@ export const VisualEditor = defineComponent({
       return blockHandler;
     })();
 
+    // 当前选中的block
+    const state = reactive({
+      selectBlock: null as null | VisualEditorBlockData,
+    });
+
     // 处理组件在画布上他拖拽
     const blockDragger = (() => {
       let dragState = {
         startX: 0,
         startY: 0,
         startPos: [] as { left: number; top: number }[],
+
+        startLeft: 0,
+        startTop: 0,
+        markLines: {} as VisualEditorMarkLine,
       };
 
+      // 用于视图展示的辅助线
+      const mark = reactive({
+        x: null as null | number,
+        y: null as null | number,
+      });
+
       const mousemove = (e: MouseEvent) => {
-        let durX = e.clientX - dragState.startX;
-        let durY = e.clientY - dragState.startY;
+        let { clientX: moveX, clientY: moveY } = e;
+
+        const { startX, startY } = dragState;
 
         // 按下shift键时，组件只能横向或纵向移动
         if (e.shiftKey) {
           // 当鼠标横向移动的距离 大于 纵向移动的距离，将纵向的偏移置为0
-          if (Math.abs(durX) > Math.abs(durY)) {
-            durY = 0;
+          if (Math.abs(e.clientX - startX) > Math.abs(e.clientY - startY)) {
+            moveY = startY;
           } else {
-            durX = 0;
+            moveX = startX;
           }
         }
+
+        const currentLeft = dragState.startLeft + moveX - startX;
+        const currentTop = dragState.startTop + moveY - startY;
+        const currentMark = {
+          x: null as null | number,
+          y: null as null | number,
+        };
+
+        for (let i = 0; i < dragState.markLines.y.length; i++) {
+          const { top, showTop } = dragState.markLines.y[i];
+          if (Math.abs(top - currentTop) < 5) {
+            moveY = top + startY - dragState.startTop;
+            currentMark.y = showTop;
+            break;
+          }
+        }
+
+        for (let i = 0; i < dragState.markLines.x.length; i++) {
+          const { left, showLeft } = dragState.markLines.x[i];
+          if (Math.abs(left - currentLeft) < 5) {
+            moveX = left + startX - dragState.startLeft;
+            currentMark.x = showLeft;
+            break;
+          }
+        }
+
+        const durY = moveY - startY;
+        const durX = moveX - startX;
+
         focusData.value.focus.forEach((block, i) => {
           block.top = dragState.startPos[i].top + durY;
           block.left = dragState.startPos[i].left + durX;
         });
+
+        mark.x = currentMark.x;
+        mark.y = currentMark.y;
       };
       const mouseup = (e: MouseEvent) => {
         document.removeEventListener("mousemove", mousemove);
@@ -182,12 +231,42 @@ export const VisualEditor = defineComponent({
             top,
             left,
           })),
+          startTop: state.selectBlock!.top,
+          startLeft: state.selectBlock!.left,
+          markLines: (() => {
+            const { focus, unfocus } = focusData.value;
+            // 当前选中的block
+            const { top, left, width, height } = state.selectBlock!;
+            let lines = { x: [], y: [] } as VisualEditorMarkLine;
+            unfocus.forEach((block) => {
+              const { top: t, left: l, width: w, height: h } = block;
+
+              // y轴对齐方式
+              lines.y.push({ top: t, showTop: t }); // 顶对顶
+              lines.y.push({ top: t + h, showTop: t + h }); // 底对底
+              lines.y.push({ top: t + h / 2 - height / 2, showTop: t + h / 2 }); // 中对中
+              lines.y.push({ top: t - height, showTop: t }); // 顶对底
+              lines.y.push({ top: t + h - height, showTop: t + h }); //
+
+              // x轴对齐方式
+              lines.x.push({ left: l, showLeft: l }); // 顶对顶
+              lines.x.push({ left: l + w, showLeft: l + w }); // 底对底
+              lines.x.push({
+                left: l + w / 2 - width / 2,
+                showLeft: l + w / 2,
+              }); // 中对中
+              lines.x.push({ left: l - width, showLeft: l }); // 顶对底
+              lines.x.push({ left: l + w - width, showLeft: l + w }); // 中对中
+            });
+
+            return lines;
+          })(),
         };
         document.addEventListener("mousemove", mousemove);
         document.addEventListener("mouseup", mouseup);
       };
 
-      return { mousedown };
+      return { mousedown, mark };
     })();
 
     // 处理组件的选中状态
@@ -197,6 +276,7 @@ export const VisualEditor = defineComponent({
           onMousedown: (e: MouseEvent) => {
             e.stopPropagation();
             methods.clearFocus();
+            state.selectBlock = null;
           },
         },
         block: {
@@ -212,6 +292,7 @@ export const VisualEditor = defineComponent({
                 block.focus = true;
               }
             }
+            state.selectBlock = block;
             // 处理组件的选中移动
             blockDragger.mousedown(e);
           },
@@ -286,6 +367,18 @@ export const VisualEditor = defineComponent({
                   }}
                 />
               ))}
+              {blockDragger.mark.x && (
+                <div
+                  class="mark-line-x"
+                  style={{ left: `${blockDragger.mark.x}px` }}
+                ></div>
+              )}
+              {blockDragger.mark.y && (
+                <div
+                  class="mark-line-y"
+                  style={{ top: `${blockDragger.mark.y}px` }}
+                ></div>
+              )}
             </div>
           </div>
         </div>

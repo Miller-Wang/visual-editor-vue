@@ -59,3 +59,9 @@ export function createVisualEditorConfig() {
 
 // 配置类型
 export type VisualEditorConfig = ReturnType<typeof createVisualEditorConfig>;
+
+// 辅助线的数据类型
+export interface VisualEditorMarkLine {
+  x: { left: number; showLeft: number }[];
+  y: { top: number; showTop: number }[];
+}
