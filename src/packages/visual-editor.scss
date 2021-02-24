@@ -120,6 +120,13 @@ $primary: #409eff;
     right: 0;
     bottom: 0;
     background-color: white;
+    padding: 20px 10px;
+    box-sizing: border-box;
+    .el-input,
+    .el-select,
+    .el-input-number {
+      width: 100%;
+    }
   }
 
   & > .body {

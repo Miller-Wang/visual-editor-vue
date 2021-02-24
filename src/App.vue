@@ -29,6 +29,7 @@ export default defineComponent({
             width: 0,
             height: 0,
             adjustPosition: true,
+            props: {},
           },
           {
             componentKey: "input",
@@ -38,6 +39,7 @@ export default defineComponent({
             width: 0,
             height: 0,
             adjustPosition: true,
+            props: {},
           },
         ],
       },

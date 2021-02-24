@@ -10,6 +10,8 @@ import {
   VisualEditorMarkLine,
   VisualEditorModelValue,
 } from "./visual-editor.utils";
+import { VisualOperatorEditor } from "./visual-editor-operator";
+import deepcopy from "deepcopy";
 
 export const VisualEditor = defineComponent({
   props: {
@@ -61,6 +63,9 @@ export const VisualEditor = defineComponent({
           blocks = blocks.filter((v) => v !== block);
         }
         blocks.forEach((block) => (block.focus = false));
+      },
+      updateBlocks: (blocks: VisualEditorBlockData[]) => {
+        dataModel.value!.blocks = blocks;
       },
     };
 
@@ -324,6 +329,25 @@ export const VisualEditor = defineComponent({
       },
     ];
 
+    // 更新block属性
+    const updateBlockProps = (
+      newBlock: VisualEditorBlockData,
+      oldBlock: VisualEditorBlockData
+    ) => {
+      const blocks = [...dataModel.value!.blocks];
+      const index = dataModel.value!.blocks.indexOf(state.selectBlock!);
+      if (index > -1) {
+        blocks.splice(index, 1, newBlock);
+        dataModel.value!.blocks = deepcopy(blocks);
+        state.selectBlock = dataModel.value!.blocks[index];
+      }
+    };
+
+    // 更新容器属性值
+    const updateModelValue = (newVal: VisualEditorModelValue) => {
+      props.modelValue!.container = { ...newVal.container };
+    };
+
     return () => (
       <div class="visual-editor">
         <div class="menu">
@@ -347,7 +371,6 @@ export const VisualEditor = defineComponent({
             </div>
           ))}
         </div>
-        <div class="operator">operator</div>
         <div class="body">
           <div class="content">
             <div
@@ -382,6 +405,13 @@ export const VisualEditor = defineComponent({
             </div>
           </div>
         </div>
+        <VisualOperatorEditor
+          block={state.selectBlock!}
+          config={props.config}
+          dataModel={dataModel as any}
+          updateBlock={updateBlockProps}
+          updateModelValue={updateModelValue}
+        />
       </div>
     );
   },

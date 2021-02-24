@@ -52,6 +52,7 @@ export const VisualEditorBlock = defineComponent({
               height: props.block.height,
             }
           : {},
+        props: props.block?.props || {},
       };
       const Render = component?.render(renderProps);
       return (

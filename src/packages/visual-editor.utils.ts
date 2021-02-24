@@ -1,3 +1,5 @@
+import { VisualEditorProps } from "./visual-editor.props";
+
 export interface VisualEditorBlockData {
   top: number;
   left: number;
@@ -7,6 +9,7 @@ export interface VisualEditorBlockData {
   width: number;
   height: number;
   hasResize: boolean; // 是否调整过宽高
+  props?: object;
 }
 
 export interface VisualEditorModelValue {
@@ -21,8 +24,12 @@ export interface VisualEditorComponent {
   key: string;
   label: string;
   preview: () => JSX.Element;
-  render: (data: { size: { width?: number; height?: number } }) => JSX.Element;
+  render: (data: {
+    size: { width?: number; height?: number };
+    props: any;
+  }) => JSX.Element;
   resize?: { width?: boolean; height?: boolean };
+  props?: Record<string, VisualEditorProps>;
 }
 
 export function createNewBlock(data: {
@@ -39,6 +46,7 @@ export function createNewBlock(data: {
     width: 0,
     height: 0,
     hasResize: false,
+    props: {},
   };
 }
 
